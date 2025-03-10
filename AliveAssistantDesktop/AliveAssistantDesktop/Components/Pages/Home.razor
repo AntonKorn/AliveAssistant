@@ -1,0 +1,38 @@
+﻿@page "/"
+
+@using MudBlazor
+
+<div class="d-flex flex-column chat">
+    <div class="chat__messages flex-grow-1">
+        <div style="max-height:65vh;min-height:65vh;overflow:scroll;">
+            @foreach (var message in _phiMessages)
+            {
+                <MudChat ChatPosition="message.Type == PhiMessageType.Assistant ? ChatBubblePosition.Start : ChatBubblePosition.End">
+                    <MudChatBubble>
+                        @message.Text
+                    </MudChatBubble>
+                </MudChat>
+            }
+
+            @if (_isLoading && _currentlyGeneratedMessage is not null)
+            {
+                <MudChat ChatPosition="ChatBubblePosition.Start">
+                    <MudChatBubble>
+                        @_currentlyGeneratedMessage
+                    </MudChatBubble>
+                </MudChat>
+            }
+        </div>
+    </div>
+    <div class="chat__controls d-flex">
+        <div class="chat__text-input flex-grow-1">
+            <MudTextField T="string" Lines="3" @bind-Value="_userInput"></MudTextField>
+        </div>
+        <MudButton OnClick="@OnChatClickedAsync" Disabled="_isLoading">
+            Send
+        </MudButton>
+        <MudButton OnClick="@OnListenClickedAsync" Disabled="_isLoading">
+            @(!_isListening ? "Listen" : "Listening")
+        </MudButton>
+    </div>
+</div>
